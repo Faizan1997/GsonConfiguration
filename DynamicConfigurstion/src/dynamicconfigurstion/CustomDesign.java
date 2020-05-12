@@ -1,6 +1,5 @@
 package dynamicconfigurstion;
 
-import com.google.common.collect.HashBiMap;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,13 +9,12 @@ import java.awt.GridLayout;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class CustomDesign extends JFrame {
@@ -48,8 +46,16 @@ public class CustomDesign extends JFrame {
     ReadData readData = new ReadData();
     Map<String, JTextField> dataMembersMap = new HashMap<>();
     Map<String, Method> methodMap = new HashMap<>();
+    Map<Integer, Map> gatewayMap = new HashMap<>();
+
     int xPoint = 0;
     int yPoint = 0;
+    Object s;
+    int gatewayCount = 0;
+    int listCount=0;
+    
+    Field[] dataFieldsrArray;
+    Method[] methodsArray;
 
     public CustomDesign() {
         this.setLayout(new BorderLayout());
@@ -76,10 +82,14 @@ public class CustomDesign extends JFrame {
         basicIpPanel.setPreferredSize(new Dimension(600, 100));
 
         Custom data = readData.readJsonData("custom.json");
-        Field[] dataFieldsrArray = data.getClass().getDeclaredFields();
+        System.err.println(data.getDatabaseIp());
+        System.err.println(data.getServerIp());
+        System.err.println(data.getSMUIp());
+        System.out.println("Done");
+        dataFieldsrArray = data.getClass().getDeclaredFields();
         Class obj = Custom.class;
-        Method[] methodsArray = obj.getMethods();
-
+        methodsArray = obj.getMethods();
+        countofList();
         try {
 
             for (int j = 0; j < methodsArray.length; j++) {
@@ -92,10 +102,24 @@ public class CustomDesign extends JFrame {
 
         }
 
+        
+        mainGatewayPanel = new JPanel(new GridLayout(1, listCount));
+       // mainGatewayPanel.setPreferredSize(new Dimension(600, 400));
+        mainGatewayPanel.setBackground(Color.PINK);
+        
+        
+        
+        
         for (int i = 0; i < dataFieldsrArray.length; i++) {
+            try {
 
+                s = (methodMap.get("get" + dataFieldsrArray[i].getName().toLowerCase())).invoke(data, null);
+
+            } catch (Exception e) {
+
+            }
             //JPanel basicIpPanel=new JPanel(new GridLayout(1, 4));
-            if (dataFieldsrArray[i].getType() == String.class) {
+            if (dataFieldsrArray[i].getType() == String.class && (s != null)) {
                 if (xPoint == 0) {
                     gridConstraints.fill = GridBagConstraints.HORIZONTAL;
                 }
@@ -116,18 +140,15 @@ public class CustomDesign extends JFrame {
                 } else {
                     xPoint++;
                 }
-                try {
-
-                    Object s = (methodMap.get("get" + dataFieldsrArray[i].getName().toLowerCase())).invoke(data, null);
-                    System.err.println(s);
-                    if (s != null && !s.equals("")) {
-                        dataMembersMap.get(dataFieldsrArray[i].getName()).setText(s.toString());
-                    }
-
-                } catch (Exception e) {
-
-                }
+                dataMembersMap.get(dataFieldsrArray[i].getName()).setText(s.toString());
                 // fields.get(datamember[i].getName()).setText("12345");
+            } else if (dataFieldsrArray[i].getType() == List.class && (s != null)) {
+
+                gatewayCount++;
+                gatewayMap.put(gatewayCount, new HashMap<Integer, Object>());
+
+                drawGatewayPanel((List) s, dataFieldsrArray[i].getName(), gatewayMap.get(gatewayCount), gatewayCount);
+
             }
 
 //            if (i == 0) {
@@ -178,147 +199,153 @@ public class CustomDesign extends JFrame {
 
         mainPanel.add(basicIpPanel, BorderLayout.NORTH);
 
-        mainGatewayPanel = new JPanel(new GridLayout(1, 3));
-        mainGatewayPanel.setPreferredSize(new Dimension(600, 400));
+        
 
-        //JPanel gatewayXPanel = new JPanel(new GridLayout(3, 1));
-        gatewayXPanel = new JPanel(new GridBagLayout());
-        gatewayXPanel.setPreferredSize(new Dimension(200, 400));
-
-        gatewayXLable = new JLabel("GateWay X");
-        gridConstraints.fill = GridBagConstraints.VERTICAL;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 0;
-        gatewayXPanel.add(gatewayXLable, gridConstraints);
-
-        gatewayXField = new JTextField(15);
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 1;
-        gatewayXPanel.add(gatewayXField, gridConstraints);
-
-        gatewayXIpPanel = new JPanel();
-        gatewayXIpPanel.setPreferredSize(new Dimension(180, 300));
-        gatewayXIpPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
-        gatewayXIpPanel.setBackground(Color.red);
-        xPoint = 0;
-        yPoint = 0;
-        gridConstraints.fill = GridBagConstraints.VERTICAL;
-        for (int i = 0; i < 10; i++) {
-            // if(datamember[i].getType()== String.class){
-
-            //serverIpLabel = new JLabel(datamember[i].getName());
-            gridConstraints.gridx = xPoint;
-            gridConstraints.gridy = yPoint;
-            // fields.put(datamember[i].getName(), new JTextField(20));
-
-            gatewayXIpPanel.add(new JTextField(12), gridConstraints);
-            yPoint++;
-
-            // fields.get(datamember[i].getName()).setText("12345");
-        }
-        //}
-
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 2;
-        gatewayXPanel.add(gatewayXIpPanel, gridConstraints);
-
-        gridConstraints.fill = GridBagConstraints.HORIZONTAL;
-        gridConstraints.ipady = 10;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 1;
-        mainGatewayPanel.add(gatewayXPanel, gridConstraints);
-
-        gatewayYPanel = new JPanel(new GridBagLayout());
-        gatewayYPanel.setPreferredSize(new Dimension(200, 400));
-
-        gatewayYLable = new JLabel("GateWay Y");
-        gridConstraints.fill = GridBagConstraints.VERTICAL;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 0;
-        gatewayYPanel.add(gatewayYLable, gridConstraints);
-
-        gatewayYField = new JTextField(15);
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 1;
-        gatewayYPanel.add(gatewayYField, gridConstraints);
-
-        gatewayYIpPanel = new JPanel();
-        gatewayYIpPanel.setPreferredSize(new Dimension(180, 300));
-        gatewayYIpPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
-        gatewayYIpPanel.setBackground(Color.red);
-        xPoint = 0;
-        yPoint = 0;
-        gridConstraints.fill = GridBagConstraints.VERTICAL;
-        for (int i = 0; i < 10; i++) {
-            // if(datamember[i].getType()== String.class){
-
-            //serverIpLabel = new JLabel(datamember[i].getName());
-            gridConstraints.gridx = xPoint;
-            gridConstraints.gridy = yPoint;
-            // fields.put(datamember[i].getName(), new JTextField(20));
-
-            gatewayYIpPanel.add(new JTextField(12), gridConstraints);
-            yPoint++;
-
-            // fields.get(datamember[i].getName()).setText("12345");
-        }
-        //}
-
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 2;
-        gatewayYPanel.add(gatewayYIpPanel, gridConstraints);
-
-        gridConstraints.fill = GridBagConstraints.HORIZONTAL;
-        gridConstraints.ipady = 10;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 1;
-        mainGatewayPanel.add(gatewayYPanel, gridConstraints);
-
-        gatewayZPanel = new JPanel(new GridBagLayout());
-        gatewayZPanel.setPreferredSize(new Dimension(200, 400));
-
-        gatewayZLable = new JLabel("GateWay Z");
-        gridConstraints.fill = GridBagConstraints.VERTICAL;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 0;
-        gatewayZPanel.add(gatewayZLable, gridConstraints);
-
-        gatewayZField = new JTextField(15);
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 1;
-        gatewayZPanel.add(gatewayZField, gridConstraints);
-
-        gatewayZIpPanel = new JPanel();
-        gatewayZIpPanel.setPreferredSize(new Dimension(180, 300));
-        gatewayZIpPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
-        gatewayZIpPanel.setBackground(Color.red);
-        xPoint = 0;
-        yPoint = 0;
-        gridConstraints.fill = GridBagConstraints.VERTICAL;
-        for (int i = 0; i < 10; i++) {
-            // if(datamember[i].getType()== String.class){
-
-            //serverIpLabel = new JLabel(datamember[i].getName());
-            gridConstraints.gridx = xPoint;
-            gridConstraints.gridy = yPoint;
-            // fields.put(datamember[i].getName(), new JTextField(20));
-
-            gatewayZIpPanel.add(new JTextField(12), gridConstraints);
-            yPoint++;
-
-            // fields.get(datamember[i].getName()).setText("12345");
-        }
-        //}
-
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 2;
-        gatewayZPanel.add(gatewayZIpPanel, gridConstraints);
-
-        gridConstraints.fill = GridBagConstraints.HORIZONTAL;
-        gridConstraints.ipady = 10;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 1;
-        mainGatewayPanel.add(gatewayZPanel, gridConstraints);
+        
+        
+        
+        
+        
+        
+        
+//        //JPanel gatewayXPanel = new JPanel(new GridLayout(3, 1));
+//        gatewayXPanel = new JPanel(new GridBagLayout());
+//        // gatewayXPanel.setPreferredSize(new Dimension(200, 400));
+//
+//        gatewayXLable = new JLabel("GateWay X");
+//        gridConstraints.fill = GridBagConstraints.VERTICAL;
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 0;
+//        gatewayXPanel.add(gatewayXLable, gridConstraints);
+//
+//        gatewayXField = new JTextField(15);
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 1;
+//        gatewayXPanel.add(gatewayXField, gridConstraints);
+//
+//        gatewayXIpPanel = new JPanel();
+//        gatewayXIpPanel.setPreferredSize(new Dimension(180, 300));
+//        gatewayXIpPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
+//        gatewayXIpPanel.setBackground(Color.red);
+//        xPoint = 0;
+//        yPoint = 0;
+//        gridConstraints.fill = GridBagConstraints.VERTICAL;
+//        for (int i = 0; i < 10; i++) {
+//            // if(datamember[i].getType()== String.class){
+//
+//            //serverIpLabel = new JLabel(datamember[i].getName());
+//            gridConstraints.gridx = xPoint;
+//            gridConstraints.gridy = yPoint;
+//            // fields.put(datamember[i].getName(), new JTextField(20));
+//
+//            gatewayXIpPanel.add(new JTextField(12), gridConstraints);
+//            yPoint++;
+//
+//            // fields.get(datamember[i].getName()).setText("12345");
+//        }
+//        //}
+//
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 2;
+//        gatewayXPanel.add(gatewayXIpPanel, gridConstraints);
+//
+//        gridConstraints.fill = GridBagConstraints.HORIZONTAL;
+//        gridConstraints.ipady = 10;
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 1;
+//        mainGatewayPanel.add(gatewayXPanel, gridConstraints);
+//
+//        gatewayYPanel = new JPanel(new GridBagLayout());
+//        gatewayYPanel.setPreferredSize(new Dimension(200, 400));
+//
+//        gatewayYLable = new JLabel("GateWay Y");
+//        gridConstraints.fill = GridBagConstraints.VERTICAL;
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 0;
+//        gatewayYPanel.add(gatewayYLable, gridConstraints);
+//
+//        gatewayYField = new JTextField(15);
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 1;
+//        gatewayYPanel.add(gatewayYField, gridConstraints);
+//
+//        gatewayYIpPanel = new JPanel();
+//        gatewayYIpPanel.setPreferredSize(new Dimension(180, 300));
+//        gatewayYIpPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
+//        gatewayYIpPanel.setBackground(Color.red);
+//        xPoint = 0;
+//        yPoint = 0;
+//        gridConstraints.fill = GridBagConstraints.VERTICAL;
+//        for (int i = 0; i < 10; i++) {
+//            // if(datamember[i].getType()== String.class){
+//
+//            //serverIpLabel = new JLabel(datamember[i].getName());
+//            gridConstraints.gridx = xPoint;
+//            gridConstraints.gridy = yPoint;
+//            // fields.put(datamember[i].getName(), new JTextField(20));
+//
+//            gatewayYIpPanel.add(new JTextField(12), gridConstraints);
+//            yPoint++;
+//
+//            // fields.get(datamember[i].getName()).setText("12345");
+//        }
+//        //}
+//
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 2;
+//        gatewayYPanel.add(gatewayYIpPanel, gridConstraints);
+//
+//        gridConstraints.fill = GridBagConstraints.HORIZONTAL;
+//        gridConstraints.ipady = 10;
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 1;
+//        mainGatewayPanel.add(gatewayYPanel, gridConstraints);
+//
+//        gatewayZPanel = new JPanel(new GridBagLayout());
+//        gatewayZPanel.setPreferredSize(new Dimension(200, 400));
+//
+//        gatewayZLable = new JLabel("GateWay Z");
+//        gridConstraints.fill = GridBagConstraints.VERTICAL;
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 0;
+//        gatewayZPanel.add(gatewayZLable, gridConstraints);
+//
+//        gatewayZField = new JTextField(15);
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 1;
+//        gatewayZPanel.add(gatewayZField, gridConstraints);
+//
+//        gatewayZIpPanel = new JPanel();
+//        gatewayZIpPanel.setPreferredSize(new Dimension(180, 300));
+//        gatewayZIpPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
+//        gatewayZIpPanel.setBackground(Color.red);
+//        xPoint = 0;
+//        yPoint = 0;
+//        gridConstraints.fill = GridBagConstraints.VERTICAL;
+//        for (int i = 0; i < 10; i++) {
+//            // if(datamember[i].getType()== String.class){
+//
+//            //serverIpLabel = new JLabel(datamember[i].getName());
+//            gridConstraints.gridx = xPoint;
+//            gridConstraints.gridy = yPoint;
+//            // fields.put(datamember[i].getName(), new JTextField(20));
+//
+//            gatewayZIpPanel.add(new JTextField(12), gridConstraints);
+//            yPoint++;
+//
+//            // fields.get(datamember[i].getName()).setText("12345");
+//        }
+//        //}
+//
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 2;
+//        gatewayZPanel.add(gatewayZIpPanel, gridConstraints);
+//
+//        gridConstraints.fill = GridBagConstraints.HORIZONTAL;
+//        gridConstraints.ipady = 10;
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 1;
+//        mainGatewayPanel.add(gatewayZPanel, gridConstraints);
 
 //        gatewayZPanel = new JPanel(new GridLayout(3, 1));
 //        gatewayZPanel.setPreferredSize(new Dimension(200, 400));
@@ -338,6 +365,86 @@ public class CustomDesign extends JFrame {
         this.add(mainPanel, BorderLayout.CENTER);
 
         this.pack();
+
+    }
+
+    public void countofList() {
+          for (int i = 0; i < dataFieldsrArray.length; i++) {
+              if (dataFieldsrArray[i].getType() == List.class) {}
+              listCount++;
+          }
+          
+
+    }
+
+    public void drawGatewayPanel(List x, String name, Map myPanel, int panelNumber) {
+
+        myPanel.put(1, new JPanel(new GridBagLayout()));
+        //gatewayXPanel = new JPanel(new GridBagLayout());
+
+        myPanel.put(2, new JLabel(name));
+        //gatewayXLable = new JLabel(name);
+
+        gridConstraints.fill = GridBagConstraints.VERTICAL;
+        gridConstraints.gridx = 0;
+        gridConstraints.gridy = 0;
+
+        ((JPanel) myPanel.get(1)).add((JLabel) myPanel.get(2), gridConstraints);
+        //gatewayXPanel.add(gatewayXLable, gridConstraints);
+
+        myPanel.put(3, new JTextField(15));
+        //gatewayXField = new JTextField(15);
+        gridConstraints.gridx = 0;
+        gridConstraints.gridy = 1;
+        ((JPanel) myPanel.get(1)).add((JTextField) myPanel.get(3), gridConstraints);
+        ((JTextField)myPanel.get(3)).setText(x.size()+"");
+        // gatewayXPanel.add(gatewayXField, gridConstraints);
+
+        myPanel.put(4, new JPanel());
+        //gatewayXIpPanel = new JPanel();
+
+        ((JPanel) myPanel.get(4)).setPreferredSize(new Dimension(180, 300));
+        //gatewayXIpPanel.setPreferredSize(new Dimension(180, 300));
+
+        ((JPanel) myPanel.get(4)).setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
+        // gatewayXIpPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
+        ((JPanel) myPanel.get(4)).setBackground(Color.red);
+        //gatewayXIpPanel.setBackground(Color.red);
+        xPoint = 0;
+        yPoint = 0;
+        gridConstraints.fill = GridBagConstraints.VERTICAL;
+        for (int i = 0; i < x.size(); i++) {
+            // if(datamember[i].getType()== String.class){
+
+            //serverIpLabel = new JLabel(datamember[i].getName());
+            gridConstraints.gridx = xPoint;
+            gridConstraints.gridy = yPoint;
+            // fields.put(datamember[i].getName(), new JTextField(20));
+            myPanel.put(i + 5, new JTextField(15));
+            ((JPanel) myPanel.get(4)).add(((JTextField)myPanel.get(i+5)), gridConstraints);
+            //gatewayXIpPanel.add(new JTextField(12), gridConstraints);
+            ((JTextField)myPanel.get(i+5)).setText(x.get(i).toString());
+            yPoint++;
+
+            // fields.get(datamember[i].getName()).setText("12345");
+        }
+        //}
+
+        gridConstraints.gridx = 0;
+        gridConstraints.gridy = 2;
+        ((JPanel) myPanel.get(1)).add(((JPanel) myPanel.get(4)), gridConstraints);
+        // gatewayXPanel.add(gatewayXIpPanel, gridConstraints);
+
+        gridConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridConstraints.ipady = 10;
+        gridConstraints.gridx = 0;
+        gridConstraints.gridy = 1;
+        mainGatewayPanel.add(((JPanel) myPanel.get(1)), gridConstraints);
+        //mainGatewayPanel.add(gatewayXPanel, gridConstraints);
+
+    }
+
+    public void addGateWaysPanel() {
 
     }
 }
