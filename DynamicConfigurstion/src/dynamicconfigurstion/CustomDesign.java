@@ -119,7 +119,7 @@ public class CustomDesign extends JFrame {
                 gridConstraints.gridx = xPoint;
                 gridConstraints.gridy = yPoint;
                 dataMembersMap.put(dataFieldsrArray[i].getName(), new JTextField(12));
-                basicIpPanel.add(new JLabel(dataFieldsrArray[i].getName().toUpperCase()+"    "), gridConstraints);
+                basicIpPanel.add(new JLabel(dataFieldsrArray[i].getName().toUpperCase() + "    "), gridConstraints);
                 xPoint++;
                 gridConstraints.gridx = xPoint;
                 gridConstraints.gridy = yPoint;
@@ -139,17 +139,17 @@ public class CustomDesign extends JFrame {
                 gatewayCount++;
                 gatewayMap.put(gatewayCount, new HashMap<Integer, Object>());
 
-                drawGatewayPanel((List) object, dataFieldsrArray[i].getName(), gatewayMap.get(gatewayCount), gatewayCount);
+                gridConstraints.fill = GridBagConstraints.HORIZONTAL;
+                gridConstraints.ipady = 10;
+                gridConstraints.gridx = 0;
+                gridConstraints.gridy = 1;
+                mainGatewayPanel.add(new GateWayPanel((List) object, dataFieldsrArray[i].getName()), gridConstraints);
+               // drawGatewayPanel((List) object, dataFieldsrArray[i].getName(), gatewayMap.get(gatewayCount), gatewayCount);
 
             }
 
         }
 
-//                gridConstraints.fill = GridBagConstraints.HORIZONTAL;
-//        gridConstraints.ipady = 10;
-//        gridConstraints.gridx = 0;
-//        gridConstraints.gridy = 1;
-//         mainGatewayPanel.add(new GateWayPanel((List) object, "gateway"));
         mainPanel.add(basicIpPanel, BorderLayout.NORTH);
         mainPanel.add(mainGatewayPanel, BorderLayout.CENTER);
 
@@ -170,69 +170,13 @@ public class CustomDesign extends JFrame {
 
     public void drawGatewayPanel(List x, String name, Map myPanel, int panelNumber) {
 
-        myPanel.put(1, new JPanel(new GridBagLayout()));
-        //gatewayXPanel = new JPanel(new GridBagLayout());
-
-        myPanel.put(2, new JLabel(name));
-        //gatewayXLable = new JLabel(name);
-
-        gridConstraints.fill = GridBagConstraints.VERTICAL;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 0;
-
-        ((JPanel) myPanel.get(1)).add((JLabel) myPanel.get(2), gridConstraints);
-        //gatewayXPanel.add(gatewayXLable, gridConstraints);
-
-        myPanel.put(3, new JTextField(15));
-        //gatewayXField = new JTextField(15);
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 1;
-        ((JPanel) myPanel.get(1)).add((JTextField) myPanel.get(3), gridConstraints);
-        ((JTextField) myPanel.get(3)).setText(x.size() + "");
-        // gatewayXPanel.add(gatewayXField, gridConstraints);
-
-        myPanel.put(4, new JPanel());
-        //gatewayXIpPanel = new JPanel();
-
-        ((JPanel) myPanel.get(4)).setPreferredSize(new Dimension(180, 300));
-        //gatewayXIpPanel.setPreferredSize(new Dimension(180, 300));
-
-        ((JPanel) myPanel.get(4)).setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
-        // gatewayXIpPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
-        ((JPanel) myPanel.get(4)).setBackground(Color.red);
-        //gatewayXIpPanel.setBackground(Color.red);
-        xPoint = 0;
-        yPoint = 0;
-        gridConstraints.fill = GridBagConstraints.VERTICAL;
-        for (int i = 0; i < x.size(); i++) {
-            // if(datamember[i].getType()== String.class){
-
-            //serverIpLabel = new JLabel(datamember[i].getName());
-            gridConstraints.gridx = xPoint;
-            gridConstraints.gridy = yPoint;
-            // fields.put(datamember[i].getName(), new JTextField(20));
-            myPanel.put(i + 5, new JTextField(15));
-            ((JPanel) myPanel.get(4)).add(((JTextField) myPanel.get(i + 5)), gridConstraints);
-            //gatewayXIpPanel.add(new JTextField(12), gridConstraints);
-            ((JTextField) myPanel.get(i + 5)).setText(x.get(i).toString());
-            yPoint++;
-
-            // fields.get(datamember[i].getName()).setText("12345");
-        }
-        //}
-
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 2;
-        ((JPanel) myPanel.get(1)).add(((JPanel) myPanel.get(4)), gridConstraints);
-        // gatewayXPanel.add(gatewayXIpPanel, gridConstraints);
-
-        gridConstraints.fill = GridBagConstraints.HORIZONTAL;
-        gridConstraints.ipady = 10;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 1;
-        mainGatewayPanel.add(new GateWayPanel(x, name), gridConstraints);
-        // mainGatewayPanel.add(((JPanel) myPanel.get(1)), gridConstraints);
-        //mainGatewayPanel.add(gatewayXPanel, gridConstraints);
+//        gridConstraints.fill = GridBagConstraints.HORIZONTAL;
+//        gridConstraints.ipady = 10;
+//        gridConstraints.gridx = 0;
+//        gridConstraints.gridy = 1;
+//        mainGatewayPanel.add(new GateWayPanel(x, name), gridConstraints);
+//        // mainGatewayPanel.add(((JPanel) myPanel.get(1)), gridConstraints);
+//        //mainGatewayPanel.add(gatewayXPanel, gridConstraints);
 
     }
 
