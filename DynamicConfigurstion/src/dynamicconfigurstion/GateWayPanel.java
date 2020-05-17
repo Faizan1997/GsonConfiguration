@@ -23,7 +23,7 @@ public class GateWayPanel extends JPanel{
     
     private JLabel headerLabel;
     private JTextField gatewayCountField;
-    private IpPanel ipPanel;
+    private GatewayIpPanel ipPanel;
      private GridBagConstraints gridConstraints;
 
     public JTextField getGatewayCountField() {
@@ -42,16 +42,16 @@ public class GateWayPanel extends JPanel{
         this.headerLabel = headerLabel;
     }
 
-    public IpPanel getIpPanel() {
+    public GatewayIpPanel getIpPanel() {
         return ipPanel;
     }
 
-    public void setIpPanel(IpPanel ipPanel) {
+    public void setIpPanel(GatewayIpPanel ipPanel) {
         this.ipPanel = ipPanel;
     }
     
     
-    public GateWayPanel(List IpList,String name){
+    public GateWayPanel(GatewayDataClass data){
         this.setPreferredSize(new Dimension(180, 300));
         this.setBackground(Color.BLUE);
         TitledBorder title=BorderFactory.createTitledBorder("Ip List");
@@ -59,7 +59,7 @@ public class GateWayPanel extends JPanel{
         gridConstraints=new GridBagConstraints();
         
         
-        headerLabel=new JLabel(name.toUpperCase());
+        headerLabel=new JLabel(data.getGatewayName().toUpperCase());
           gridConstraints.fill = GridBagConstraints.VERTICAL;
         gridConstraints.gridx = 0;
         gridConstraints.gridy = 0;
@@ -68,8 +68,8 @@ public class GateWayPanel extends JPanel{
          gridConstraints.gridx = 0;
         gridConstraints.gridy = 1;
         this.add(gatewayCountField,gridConstraints);
-        gatewayCountField.setText((IpList.size()+""));
-        ipPanel=new IpPanel(IpList);
+        gatewayCountField.setText((data.getGatewayValues().size()+""));
+        ipPanel=new GatewayIpPanel(data.getGatewayValues());
         gridConstraints.gridx = 0;
         gridConstraints.gridy = 2;
         this.add(ipPanel,gridConstraints);

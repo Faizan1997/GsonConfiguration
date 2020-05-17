@@ -1,52 +1,56 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package dynamicconfigurstion;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.util.List;
+import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 
-/**
- *
- * @author Lenovo
- */
-public class IpPanel extends JPanel {
-
+public class IpPanel extends JPanel{
+    
+    private GridBagConstraints gridConstraints;
     private int xPoint = 0;
     private int yPoint = 0;
     private JTextField ip;
-    private GridBagConstraints gridConstraints;
-
-    public IpPanel(List IpList) {
+    public IpPanel(){
+        this.setLayout(new GridBagLayout());
+        this.setPreferredSize(new Dimension(600, 100));
+        this.setBackground(Color.BLUE);
+        TitledBorder title = BorderFactory.createTitledBorder("Application Ip Configuration");
+        this.setBorder(title);
         gridConstraints = new GridBagConstraints();
-        this.setPreferredSize(new Dimension(180, 330));
-        //gatewayXIpPanel.setPreferredSize(new Dimension(180, 300));
-
-        this.setBorder(BorderFactory.createLineBorder(Color.GREEN));
-        // gatewayXIpPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 20));
-        this.setBackground(Color.red);
-        //gatewayXIpPanel.setBackground(Color.red);
-        xPoint = 0;
-        yPoint = 0;
-        gridConstraints.fill = GridBagConstraints.VERTICAL;
-        for (int i = 0; i < IpList.size(); i++) {
-
-            gridConstraints.gridx = xPoint;
-            gridConstraints.gridy = yPoint;
-            ip=new JTextField(12);
-            this.add(ip, gridConstraints);
-            ip.setText(IpList.get(i).toString());
-            yPoint++;
-
-        }
-
+        
+        
+        
+        
     }
-
+    
+    public void addNewIpValue(BasicIPDataClass data){
+         if (xPoint == 0) {
+                    gridConstraints.fill = GridBagConstraints.HORIZONTAL;
+                }
+                //serverIpLabel = new JLabel(datamember[i].getName());
+                gridConstraints.gridx = xPoint;
+                gridConstraints.gridy = yPoint;
+               // dataMembersMap.put(dataFieldsrArray[i].getName(), new JTextField(12));
+                this.add(new JLabel(data.getFieldName().toUpperCase() + "    "), gridConstraints);
+                xPoint++;
+                gridConstraints.gridx = xPoint;
+                gridConstraints.gridy = yPoint;
+                ip=new JTextField(12);
+                this.add(ip, gridConstraints);
+                ip.setText(data.getFieldValue());
+                if (xPoint == 3) {
+                    xPoint = 0;
+                    yPoint = yPoint + 10;
+                } else {
+                    xPoint++;
+                }
+               // dataMembersMap.get(dataFieldsrArray[i].getName()).setText(object.toString());
+    }
 }

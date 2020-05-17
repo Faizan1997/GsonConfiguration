@@ -17,14 +17,14 @@ import javax.swing.JTextField;
  *
  * @author Lenovo
  */
-public class IpPanel extends JPanel {
+public class GatewayIpPanel extends JPanel {
 
     private int xPoint = 0;
     private int yPoint = 0;
     private JTextField ip;
     private GridBagConstraints gridConstraints;
 
-    public IpPanel(List IpList) {
+    public GatewayIpPanel(List IpList) {
         gridConstraints = new GridBagConstraints();
         this.setPreferredSize(new Dimension(180, 330));
         //gatewayXIpPanel.setPreferredSize(new Dimension(180, 300));
