@@ -1,8 +1,8 @@
 
-package DataClass;
+package dataclasses;
 
 
-public class BasicIP {
+public class BasicIPModel {
     private String fieldName;
     private String fieldValue;
 

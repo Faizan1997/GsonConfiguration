@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Panel;
+package panels;
 
-import DataClass.Gateway;
+import dataclasses.GatewayModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,11 +23,11 @@ import javax.swing.border.TitledBorder;
  *
  * @author Lenovo
  */
-public class GateWay extends JPanel{
+public class GatewayPanel extends JPanel{
     
     private JLabel headerLabel;
     private JTextField gatewayCountField;
-    private GatewayIp ipPanel;
+    private GatewayIpPanel ipPanel;
      private GridBagConstraints gridConstraints;
 
     public JTextField getGatewayCountField() {
@@ -46,16 +46,16 @@ public class GateWay extends JPanel{
         this.headerLabel = headerLabel;
     }
 
-    public GatewayIp getIpPanel() {
+    public GatewayIpPanel getIpPanel() {
         return ipPanel;
     }
 
-    public void setIpPanel(GatewayIp ipPanel) {
+    public void setIpPanel(GatewayIpPanel ipPanel) {
         this.ipPanel = ipPanel;
     }
     
     
-    public GateWay(Gateway data){
+    public GatewayPanel(GatewayModel data){
         this.setPreferredSize(new Dimension(200, 300));
         this.setBackground(Color.BLUE);
         TitledBorder title=BorderFactory.createTitledBorder("Ip List");
@@ -74,7 +74,7 @@ public class GateWay extends JPanel{
         //gridConstraints.gridy = 1;
         this.add(gatewayCountField,BorderLayout.CENTER);
         gatewayCountField.setText((data.getGatewayValues().size()+""));
-        ipPanel=new GatewayIp(data.getGatewayValues());
+        ipPanel=new GatewayIpPanel(data.getGatewayValues());
         //gridConstraints.gridx = 0;
        // gridConstraints.gridy = 2;
          this.add(new JScrollPane(ipPanel),BorderLayout.SOUTH);

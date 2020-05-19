@@ -1,9 +1,9 @@
 
-package DataClass;
+package dataclasses;
 
 import java.util.List;
 
-public class Gateway {
+public class GatewayModel {
     private String gatewayName;
     private List<String> gatewayValues;
 
