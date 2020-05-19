@@ -1,8 +1,8 @@
 
-package dynamicconfigurstion;
+package DataClass;
 
 
-public class BasicIPDataClass {
+public class BasicIP {
     private String fieldName;
     private String fieldValue;
 

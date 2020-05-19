@@ -1,5 +1,11 @@
 package dynamicconfigurstion;
 
+import ConfigClasses.ReadData;
+import ConfigClasses.Custom;
+import Panel.Ip;
+import Panel.GateWay;
+import DataClass.BasicIP;
+import DataClass.Gateway;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -7,6 +13,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.ScrollPane;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -17,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -35,19 +43,20 @@ public class CustomDesign extends JFrame {
     private int listCount = 0;
     private Field[] dataFieldsrArray;
     private Method[] methodsArray;
-    private IpPanel ipPanel;
-    private BasicIPDataClass ipData;
-    private GatewayDataClass gatewayData;
+    private Ip ipPanel;
+    private BasicIP ipData;
+    private Gateway gatewayData;
     private Custom data;
-    
+    private Dimension dimension;
     public CustomDesign() {
         this.setLayout(new BorderLayout());
-        this.setPreferredSize(new Dimension(600, 600));
+        dimension=new Dimension(600, 600);
+        this.setPreferredSize(dimension);
+        this.setResizable(false);
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("Config");
-        ipPanel = new IpPanel();
-        
+        ipPanel = new Ip();
         headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(Color.BLUE);
         headerPanel.setPreferredSize(new Dimension(600, 50));
@@ -101,7 +110,7 @@ public class CustomDesign extends JFrame {
             //JPanel basicIpPanel=new JPanel(new GridLayout(1, 4));
             if (dataFieldsrArray[i].getType() == String.class && (object != null)) {
                 
-                ipData = new BasicIPDataClass();
+                ipData = new BasicIP();
                 ipData.setFieldName(dataFieldsrArray[i].getName());
                 ipData.setFieldValue(object.toString());
                 
@@ -109,7 +118,7 @@ public class CustomDesign extends JFrame {
                 
             } else if (dataFieldsrArray[i].getType() == List.class && (object != null)) {
                 
-                gatewayData = new GatewayDataClass();
+                gatewayData = new Gateway();
                 gatewayData.setGatewayName(dataFieldsrArray[i].getName());
                 gatewayData.setGatewayValues((List) object);
                 
@@ -117,11 +126,13 @@ public class CustomDesign extends JFrame {
                 gridConstraints.ipady = 10;
                 gridConstraints.gridx = 0;
                 gridConstraints.gridy = 1;
-                mainGatewayPanel.add(new GateWayPanel(gatewayData), gridConstraints);
+                mainGatewayPanel.add(new GateWay(gatewayData), gridConstraints);
                 
             }
             
         }
+       
+        
         mainPanel.add(ipPanel, BorderLayout.NORTH);
         //mainPanel.add(basicIpPanel, BorderLayout.NORTH);
         mainPanel.add(mainGatewayPanel, BorderLayout.CENTER);

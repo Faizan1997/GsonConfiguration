@@ -1,9 +1,9 @@
 
-package dynamicconfigurstion;
+package DataClass;
 
 import java.util.List;
 
-public class GatewayDataClass {
+public class Gateway {
     private String gatewayName;
     private List<String> gatewayValues;
 
