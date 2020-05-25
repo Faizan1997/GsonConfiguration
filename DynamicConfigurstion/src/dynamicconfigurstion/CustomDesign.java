@@ -68,6 +68,7 @@ public class CustomDesign extends JFrame implements ActionListener {
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("Config");
+        this.setAlwaysOnTop(true);
         saveConfiguration = new JButton();
         buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setBackground(Color.BLUE);

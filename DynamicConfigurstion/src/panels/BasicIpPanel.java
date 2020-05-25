@@ -7,12 +7,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -20,7 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-public class BasicIpPanel extends JPanel implements ActionListener {
+public class BasicIpPanel extends JPanel implements KeyListener {
 
     private GridBagConstraints gridConstraints;
     private int xPoint = 0;
@@ -68,8 +70,11 @@ public class BasicIpPanel extends JPanel implements ActionListener {
         gridConstraints.gridx = xPoint;
         gridConstraints.gridy = yPoint;
         ip = new JTextField(17);
+        ip.setName(data.getFieldName());
         ip.setActionCommand(data.getFieldName());
-        ip.addActionListener(this);
+        //ip.addActionListener(this);
+        //ip.addFocusListener(this);
+        ip.addKeyListener(this);
         ipMap.put(data.getFieldName().toLowerCase(), data.getFieldValue());
         panel.add(ip, gridConstraints);
         ip.setText(data.getFieldValue());
@@ -82,15 +87,36 @@ public class BasicIpPanel extends JPanel implements ActionListener {
         // dataMembersMap.get(dataFieldsrArray[i].getName()).setText(object.toString());
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
 
-        if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) {
-            ipMap.remove(e.getActionCommand().toLowerCase());
-            ipMap.put(e.getActionCommand().toLowerCase(), ((JTextField) e.getSource()).getText());
-            System.err.println(ipMap.get(e.getActionCommand().toLowerCase()));
-        }else{
-             JOptionPane.showMessageDialog(this, "Invalid IP!");
-        }
+
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+         JComponent ipField=(JTextField) e.getSource();
+        
+         if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) {
+            ipMap.remove(ipField.getName().toLowerCase());
+            ipMap.put(ipField.getName().toLowerCase(), ((JTextField) e.getSource()).getText());
+            System.err.println(ipMap.get(ipField.getName().toLowerCase()));
+            ipField.setBackground(Color.green);
+        }else{
+             
+             ipField.setBackground(Color.red);
+             //JOptionPane.showMessageDialog(this, "Invalid IP!");
+        }
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

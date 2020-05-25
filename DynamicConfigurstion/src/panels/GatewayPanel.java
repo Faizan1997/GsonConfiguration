@@ -70,11 +70,14 @@ public class GatewayPanel extends JPanel{
        // gridConstraints.gridy = 0;
         this.add(headerLabel,BorderLayout.NORTH);
         gatewayCountField=new JTextField(15);
+        gatewayCountField.setName("");
+        
         // gridConstraints.gridx = 0;
         //gridConstraints.gridy = 1;
         this.add(gatewayCountField,BorderLayout.CENTER);
         gatewayCountField.setText((data.getGatewayValues().size()+""));
         ipPanel=new GatewayIpPanel(data.getGatewayValues());
+        gatewayCountField.addKeyListener(ipPanel);
         //gridConstraints.gridx = 0;
        // gridConstraints.gridy = 2;
          this.add(new JScrollPane(ipPanel),BorderLayout.SOUTH);
