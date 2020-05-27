@@ -28,7 +28,6 @@ public class BasicIpPanel extends JPanel implements KeyListener {
     private JScrollPane scroll;
     private JPanel panel;
     private Map<String, String> ipMap;
-    private int errorCount;
 
     public Map<String, String> getIpMap() {
         return ipMap;

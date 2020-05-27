@@ -101,8 +101,11 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                 }
             } else {
                 CustomDesign.getInstance().getErrorMap().put(e.getSource(), false);
-                
+                try{
                 ipList.remove(Integer.parseInt(ipField.getName()));
+                }catch(Exception ex){
+                    
+                }
                 ipField.setBackground(Color.red);
                 CustomDesign.getInstance().getSaveConfiguration().setEnabled(false);
                 CustomDesign.getInstance().getSaveConfiguration().setText("Please Correct Your IP");
