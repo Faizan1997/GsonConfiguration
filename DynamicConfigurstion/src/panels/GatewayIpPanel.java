@@ -25,15 +25,16 @@ import javax.swing.JTextField;
  *
  * @author Lenovo
  */
-public class GatewayIpPanel extends JPanel implements  KeyListener {
+public class GatewayIpPanel extends JPanel implements KeyListener {
 
     private int xPoint = 0;
     private int yPoint = 0;
     private JTextField ip;
     private GridBagConstraints gridConstraints;
     private JPanel panel;
-    private List tempList=new ArrayList();
+    private List tempList = new ArrayList();
     private List<String> ipList;
+    private int errorCount;
 
     public List<String> getIpList() {
         return ipList;
@@ -59,11 +60,10 @@ public class GatewayIpPanel extends JPanel implements  KeyListener {
         panel.setLayout(new GridBagLayout());
         //gatewayXIpPanel.setBackground(Color.red);
         //this.add(panel, "Center");
-       this.showFields(0);
+        this.showFields(0);
 
         this.add(new JScrollPane(panel), BorderLayout.CENTER);
     }
-
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -81,18 +81,31 @@ public class GatewayIpPanel extends JPanel implements  KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+
         JComponent ipField = (JTextField) e.getSource();
+        
         if (!ipField.getName().equals("")) {
-            if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) {
+            if ((CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) && (!ipList.contains(((JTextField) e.getSource()).getText()))) {
                 //ipList.remove(Integer.parseInt(ipField.getName().trim()));
-                if(Integer.parseInt(ipField.getName())>=ipList.size())
-                ipList.add(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
-                else
-                  ipList.set(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());  
+                CustomDesign.getInstance().getErrorMap().put(e.getSource(), true);
+                if (Integer.parseInt(ipField.getName()) >= ipList.size()) {
+                    ipList.add(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
+                } else {
+                    ipList.set(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
+                }
                 System.err.println(((JTextField) e.getSource()).getText());
                 ipField.setBackground(Color.GREEN);
+                if (!CustomDesign.getInstance().getErrorMap().containsValue(false)) {
+                    CustomDesign.getInstance().getSaveConfiguration().setEnabled(true);
+                    CustomDesign.getInstance().getSaveConfiguration().setText("Save Configuration");
+                }
             } else {
+                CustomDesign.getInstance().getErrorMap().put(e.getSource(), false);
+                
+                ipList.remove(Integer.parseInt(ipField.getName()));
                 ipField.setBackground(Color.red);
+                CustomDesign.getInstance().getSaveConfiguration().setEnabled(false);
+                CustomDesign.getInstance().getSaveConfiguration().setText("Please Correct Your IP");
                 //JOptionPane.showMessageDialog(this, "Invalid IP!");
             }
         } else {
@@ -130,21 +143,20 @@ public class GatewayIpPanel extends JPanel implements  KeyListener {
                 yPoint++;
 
             }
-        }else{
+        } else {
             this.showFields(count);
-            this.ipList=tempList;
+            this.ipList = tempList;
         }
     }
 
     public void showFields(int count) {
-        int iterater=0;
-        if(count==0){
-            iterater=ipList.size();
-        }else{
-            iterater=count;
+        int iterater = 0;
+        if (count == 0) {
+            iterater = ipList.size();
+        } else {
+            iterater = count;
         }
-        
-        
+
         tempList.removeAll(tempList);
         panel.removeAll();
         xPoint = 0;
@@ -162,7 +174,7 @@ public class GatewayIpPanel extends JPanel implements  KeyListener {
 
             panel.add(ip, gridConstraints);
             //this.add(ip, gridConstraints);
-            tempList.add(i,ipList.get(i));
+            tempList.add(i, ipList.get(i));
             ip.setText(ipList.get(i));
             yPoint++;
 

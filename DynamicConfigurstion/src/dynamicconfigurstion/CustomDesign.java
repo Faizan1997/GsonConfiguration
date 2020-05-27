@@ -59,8 +59,21 @@ public class CustomDesign extends JFrame implements ActionListener {
     private JPanel buttonPanel;
     private Object[] keyArray;
     private Map basicIpMap;
+    private static CustomDesign frame=new CustomDesign();
+    private Map errorMap=new HashMap();
+
+    public Map getErrorMap() {
+        return errorMap;
+    }
+
+    public void setErrorMap(Map errorMap) {
+        this.errorMap = errorMap;
+    }
+
+    
 
     public CustomDesign() {
+        
         this.setLayout(new BorderLayout());
         dimension = new Dimension(600, 370);
         this.setPreferredSize(dimension);
@@ -166,6 +179,23 @@ public class CustomDesign extends JFrame implements ActionListener {
         this.pack();
 
     }
+    
+    public static CustomDesign getInstance(){
+        if(frame!=null){
+            return frame;
+        }else{
+            frame=new CustomDesign();
+            return frame;
+        }
+    }
+
+    public JButton getSaveConfiguration() {
+        return saveConfiguration;
+    }
+
+    public void setSaveConfiguration(JButton saveConfiguration) {
+        this.saveConfiguration = saveConfiguration;
+    }
 
     public void countofList() {
         for (int i = 0; i < dataFieldsrArray.length; i++) {
@@ -228,5 +258,7 @@ public class CustomDesign extends JFrame implements ActionListener {
         Matcher matcher = pattern.matcher(ip);
         return matcher.matches();
     }
+    
+  
 
 }

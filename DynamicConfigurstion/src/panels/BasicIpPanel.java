@@ -7,8 +7,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
@@ -16,7 +14,6 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -31,6 +28,7 @@ public class BasicIpPanel extends JPanel implements KeyListener {
     private JScrollPane scroll;
     private JPanel panel;
     private Map<String, String> ipMap;
+    private int errorCount;
 
     public Map<String, String> getIpMap() {
         return ipMap;
@@ -87,36 +85,41 @@ public class BasicIpPanel extends JPanel implements KeyListener {
         // dataMembersMap.get(dataFieldsrArray[i].getName()).setText(object.toString());
     }
 
-
-
-
     @Override
     public void keyTyped(KeyEvent e) {
-        
+
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-         JComponent ipField=(JTextField) e.getSource();
-        
-         if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) {
+        JComponent ipField = (JTextField) e.getSource();
+        if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) {
+            CustomDesign.getInstance().getErrorMap().put(e.getSource(), true);
             ipMap.remove(ipField.getName().toLowerCase());
             ipMap.put(ipField.getName().toLowerCase(), ((JTextField) e.getSource()).getText());
             System.err.println(ipMap.get(ipField.getName().toLowerCase()));
             ipField.setBackground(Color.green);
-        }else{
-             
-             ipField.setBackground(Color.red);
-             //JOptionPane.showMessageDialog(this, "Invalid IP!");
+            if (!CustomDesign.getInstance().getErrorMap().containsValue(false)) {
+                CustomDesign.getInstance().getSaveConfiguration().setEnabled(true);
+                CustomDesign.getInstance().getSaveConfiguration().setText("Save Configuration");
+            }
+
+        } else {
+
+            CustomDesign.getInstance().getErrorMap().put(e.getSource(), false);
+
+            ipField.setBackground(Color.red);
+            CustomDesign.getInstance().getSaveConfiguration().setEnabled(false);
+            CustomDesign.getInstance().getSaveConfiguration().setText("Please Correct Your IP");
+            //JOptionPane.showMessageDialog(this, "Invalid IP!");
         }
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
