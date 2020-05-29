@@ -5,6 +5,7 @@
  */
 package panels;
 
+import configclass.StatusListener;
 import dataclasses.GatewayModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -53,7 +54,7 @@ public class GatewayPanel extends JPanel{
     }
     
     
-    public GatewayPanel(GatewayModel data){
+    public GatewayPanel(GatewayModel data,StatusListener listener){
         this.setPreferredSize(new Dimension(200, 300));
         this.setBackground(Color.BLUE);
         TitledBorder title=BorderFactory.createTitledBorder("Ip List");
@@ -74,7 +75,7 @@ public class GatewayPanel extends JPanel{
         //gridConstraints.gridy = 1;
         this.add(gatewayCountField,BorderLayout.CENTER);
         gatewayCountField.setText((data.getGatewayValues().size()+""));
-        ipPanel=new GatewayIpPanel(data.getGatewayValues());
+        ipPanel=new GatewayIpPanel(data.getGatewayValues(),listener);
         gatewayCountField.addKeyListener(ipPanel);
         //gridConstraints.gridx = 0;
        // gridConstraints.gridy = 2;

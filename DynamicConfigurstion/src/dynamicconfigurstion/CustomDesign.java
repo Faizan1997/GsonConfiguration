@@ -2,6 +2,7 @@ package dynamicconfigurstion;
 
 import configclass.ReadData;
 import configclass.Custom;
+import configclass.StatusListener;
 import configclass.WriteData;
 import panels.BasicIpPanel;
 import panels.GatewayPanel;
@@ -17,6 +18,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,7 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-public class CustomDesign extends JFrame implements ActionListener {
+public class CustomDesign extends JFrame implements ActionListener, StatusListener {
 
     private JPanel headerPanel;
     private JLabel headingLabel;
@@ -59,21 +61,19 @@ public class CustomDesign extends JFrame implements ActionListener {
     private JPanel buttonPanel;
     private Object[] keyArray;
     private Map basicIpMap;
-    private static CustomDesign frame=new CustomDesign();
-    private Map errorMap=new HashMap();
+    private static CustomDesign frame = new CustomDesign();
+    private Map errorMap = new HashMap();
 
-    public Map getErrorMap() {
-        return errorMap;
-    }
+//    public Map getErrorMap() {
+//        return errorMap;
+//    }
 
     public void setErrorMap(Map errorMap) {
         this.errorMap = errorMap;
     }
 
-    
-
     public CustomDesign() {
-        
+
         this.setLayout(new BorderLayout());
         dimension = new Dimension(600, 370);
         this.setPreferredSize(dimension);
@@ -89,7 +89,7 @@ public class CustomDesign extends JFrame implements ActionListener {
         saveConfiguration.addActionListener(this);
         saveConfiguration.setBackground(Color.PINK);
         saveConfiguration.setText("Save Configuration");
-        ipPanel = new BasicIpPanel();
+        ipPanel = new BasicIpPanel(this);
         gatewayMap = new HashMap<>();
         headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(Color.BLUE);
@@ -160,7 +160,7 @@ public class CustomDesign extends JFrame implements ActionListener {
                 gridConstraints.ipady = 10;
                 gridConstraints.gridx = 0;
                 gridConstraints.gridy = 1;
-                gateway = new GatewayPanel(gatewayData);
+                gateway = new GatewayPanel(gatewayData,this);
                 gatewayMap.put(gatewayData.getGatewayName().toLowerCase(), gateway);
 
                 mainGatewayPanel.add(gateway, gridConstraints);
@@ -179,12 +179,12 @@ public class CustomDesign extends JFrame implements ActionListener {
         this.pack();
 
     }
-    
-    public static CustomDesign getInstance(){
-        if(frame!=null){
+
+    public static CustomDesign getInstance() {
+        if (frame != null) {
             return frame;
-        }else{
-            frame=new CustomDesign();
+        } else {
+            frame = new CustomDesign();
             return frame;
         }
     }
@@ -249,7 +249,7 @@ public class CustomDesign extends JFrame implements ActionListener {
                 + zeroTo255 + "\\."
                 + zeroTo255 + "\\."
                 + zeroTo255;
- 
+
         Pattern pattern = Pattern.compile(regex);
 
         if (ip == null) {
@@ -258,7 +258,27 @@ public class CustomDesign extends JFrame implements ActionListener {
         Matcher matcher = pattern.matcher(ip);
         return matcher.matches();
     }
+
+    @Override
+    public void getStatus(boolean status) {
+        saveConfiguration.setEnabled(status);
+        if (status) {
+            saveConfiguration.setText("Save Configuration");
+        }else{
+            saveConfiguration.setText("Please Correct Your IP");
+        }
+
+    }
+
+  @Override
+    public void getSource(KeyEvent e,boolean status) {
+        errorMap.put(e.getSource(), status);
+    }
+
+   @Override
+    public Map getErrorMap() {
+        return errorMap;
+    }
     
-  
 
 }

@@ -1,5 +1,6 @@
 package panels;
 
+import configclass.StatusListener;
 import dataclasses.BasicIPModel;
 import dynamicconfigurstion.CustomDesign;
 import java.awt.BorderLayout;
@@ -21,6 +22,7 @@ import javax.swing.border.TitledBorder;
 
 public class BasicIpPanel extends JPanel implements KeyListener {
 
+    private StatusListener listener;
     private GridBagConstraints gridConstraints;
     private int xPoint = 0;
     private int yPoint = 0;
@@ -37,7 +39,8 @@ public class BasicIpPanel extends JPanel implements KeyListener {
         this.ipMap = ipMap;
     }
 
-    public BasicIpPanel() {
+    public BasicIpPanel(StatusListener listener) {
+        this.listener = listener;
         this.setLayout(new BorderLayout());
         this.setPreferredSize(new Dimension(600, 80));
         this.setBackground(Color.BLUE);
@@ -100,23 +103,26 @@ public class BasicIpPanel extends JPanel implements KeyListener {
     public void keyReleased(KeyEvent e) {
         JComponent ipField = (JTextField) e.getSource();
         if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) {
-            CustomDesign.getInstance().getErrorMap().put(e.getSource(), true);
+            listener.getSource(e, true);
+            //CustomDesign.getInstance().getErrorMap().put(e.getSource(), true);
             ipMap.remove(ipField.getName().toLowerCase());
             ipMap.put(ipField.getName().toLowerCase(), ((JTextField) e.getSource()).getText());
             System.err.println(ipMap.get(ipField.getName().toLowerCase()));
             ipField.setBackground(Color.green);
-            if (!CustomDesign.getInstance().getErrorMap().containsValue(false)) {
-                CustomDesign.getInstance().getSaveConfiguration().setEnabled(true);
-                CustomDesign.getInstance().getSaveConfiguration().setText("Save Configuration");
+            if (!listener.getErrorMap().containsValue(false)) {
+                listener.getStatus(true);
+                // CustomDesign.getInstance().getSaveConfiguration().setEnabled(true);
+                //CustomDesign.getInstance().getSaveConfiguration().setText("Save Configuration");
             }
 
         } else {
-
-            CustomDesign.getInstance().getErrorMap().put(e.getSource(), false);
+            listener.getStatus(false);
+            listener.getSource(e, false);
+           // CustomDesign.getInstance().getErrorMap().put(e.getSource(), false);
 
             ipField.setBackground(Color.red);
-            CustomDesign.getInstance().getSaveConfiguration().setEnabled(false);
-            CustomDesign.getInstance().getSaveConfiguration().setText("Please Correct Your IP");
+            //CustomDesign.getInstance().getSaveConfiguration().setEnabled(false);
+            //CustomDesign.getInstance().getSaveConfiguration().setText("Please Correct Your IP");
             //JOptionPane.showMessageDialog(this, "Invalid IP!");
         }
     }
