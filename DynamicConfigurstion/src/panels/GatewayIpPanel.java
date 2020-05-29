@@ -129,7 +129,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                 try {
                     int key = e.getKeyCode();
 
-                    if ((key > 47 && key < 58) || (key > 95 && key < 106) || (key==8)) {
+                    if (((key > 47 && key < 58) || (key > 95 && key < 106) || (key==8))&& (isValidNumber(e.getKeyChar())) ) {
                         
                         int a = Integer.parseInt(((JTextField) e.getSource()).getText().trim());
                         this.count=a;
@@ -219,6 +219,14 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
 
         return (((key == 32) || (key == 8) || (key > 43 && key < 112) || (key == 127) || (key > 149 && key < 154) || (key > 159 && key < 224)));
 
+    }
+    public boolean isValidNumber(char number){
+        try{
+            int num=Integer.parseInt((number+"").trim());
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
     }
 
 }

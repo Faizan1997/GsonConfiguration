@@ -61,7 +61,7 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
     private JPanel buttonPanel;
     private Object[] keyArray;
     private Map basicIpMap;
-    private static CustomDesign frame = new CustomDesign();
+   // private static CustomDesign frame = new CustomDesign();
     private Map errorMap = new HashMap();
 
 //    public Map getErrorMap() {
@@ -180,14 +180,14 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
 
     }
 
-    public static CustomDesign getInstance() {
-        if (frame != null) {
-            return frame;
-        } else {
-            frame = new CustomDesign();
-            return frame;
-        }
-    }
+//    public static CustomDesign getInstance() {
+//        if (frame != null) {
+//            return frame;
+//        } else {
+//            frame = new CustomDesign();
+//            return frame;
+//        }
+//    }
 
     public JButton getSaveConfiguration() {
         return saveConfiguration;
