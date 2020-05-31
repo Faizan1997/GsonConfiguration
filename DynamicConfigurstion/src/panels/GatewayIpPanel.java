@@ -286,6 +286,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                     //ipList.add(Integer.parseInt(((JTextField) ((KeyEvent) temp.get(i)).getSource()).getName().trim()), ((JTextField) ((KeyEvent) temp.get(i)).getSource()).getText());
                     ipMap.put(Integer.parseInt(((JTextField) ( temp.get(i))).getName().trim()), ((JTextField) ( temp.get(i))).getText());
                     ipList = new ArrayList<>(ipMap.values());
+                    currentIpList=new ArrayList(ipMap.values());
                     if (!listener.getErrorMap().containsValue(false)) {
                         listener.getStatus(true);
                     }
