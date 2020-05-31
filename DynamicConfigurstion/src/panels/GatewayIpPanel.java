@@ -15,7 +15,9 @@ import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -36,9 +38,11 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
     private JPanel panel;
     private List tempList = new ArrayList();
     private List<String> ipList;
-    
+    private Map ipMap = new HashMap();
+    private Map errorIpMap = new HashMap();
+
     private StatusListener listener;
-    private int  count=0;
+    private int count = 0;
 
     public List<String> getIpList() {
         return ipList;
@@ -49,7 +53,8 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
     }
 
     public GatewayIpPanel(List IpList, StatusListener listener) {
-        this.count=IpList.size();
+
+        this.count = IpList.size();
         this.listener = listener;
         panel = new JPanel();
         this.ipList = IpList;
@@ -64,6 +69,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
         //panel.setPreferredSize(new Dimension(180, 350));
 
         panel.setLayout(new GridBagLayout());
+        this.setIpMap(IpList);
         //gatewayXIpPanel.setBackground(Color.red);
         //this.add(panel, "Center");
         this.showFields(-1);
@@ -93,34 +99,59 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
 
         JComponent ipField = (JTextField) e.getSource();
         if (isNotSpecialkey(e.getKeyCode())) {
-
+            //System.err.println("entered" + ipList);
             if (!ipField.getName().equals("")) {
                 if ((CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) && (!ipList.contains(((JTextField) e.getSource()).getText()))) {
                     //ipList.remove(Integer.parseInt(ipField.getName().trim()));
                     //CustomDesign.getInstance().getErrorMap().put(e.getSource(), true);
+                    errorIpMap.put(e.getSource(), true);
                     listener.getSource(e, true);
                     if (Integer.parseInt(ipField.getName()) >= ipList.size()) {
-                        ipList.add(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
+                        ipMap.put(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
+                        //ipList.add(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
                     } else {
-                        ipList.set(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
+                        ipMap.put(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
+                        //ipList.set(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
                     }
                     //System.err.println(((JTextField) e.getSource()).getText());
                     ipField.setBackground(Color.GREEN);
+
+                    ipList = new ArrayList<>(ipMap.values());
+                    System.err.println("Sucess");
+                    System.err.println(errorIpMap.values());
+                    System.err.println(listener.getErrorMap().values());
+                    if(errorIpMap.containsValue(false)){
+                    chkFields();
+                }
                     if (!listener.getErrorMap().containsValue(false)) {
                         listener.getStatus(true);
 //                    CustomDesign.getInstance().getSaveConfiguration().setEnabled(true);
 //                    CustomDesign.getInstance().getSaveConfiguration().setText("Save Configuration");
                     }
+                    
                 } else {
+                    System.err.println(errorIpMap.get(e.getSource()));
+                    errorIpMap.put(e.getSource(), false);
                     listener.getStatus(false);
                     listener.getSource(e, false);
                     //CustomDesign.getInstance().getErrorMap().put(e.getSource(), false);
                     try {
-                        ipList.remove(Integer.parseInt(ipField.getName()));
+                        //System.err.println(ipMap);
+                        ipMap.remove(Integer.parseInt(ipField.getName()));
+                        //ipList.remove(Integer.parseInt(ipField.getName()));
+                        //System.err.println(ipList);
                     } catch (Exception ex) {
-                            System.err.println(ex.getMessage());
+                        System.err.println(ex.getMessage());
                     }
                     ipField.setBackground(Color.red);
+
+                    ipList = new ArrayList<>(ipMap.values());
+                    System.err.println("failure");
+                    System.err.println(errorIpMap.values());
+                    System.err.println(listener.getErrorMap().values());
+                    if(errorIpMap.containsValue(false)){
+                    chkFields();
+                }
 //                CustomDesign.getInstance().getSaveConfiguration().setEnabled(false);
 //                CustomDesign.getInstance().getSaveConfiguration().setText("Please Correct Your IP");
 //JOptionPane.showMessageDialog(this, "Invalid IP!");
@@ -129,16 +160,16 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                 try {
                     int key = e.getKeyCode();
 
-                    if ((((key > 47 && key < 58) || (key > 95 && key < 106) )&& (isValidNumber(e.getKeyChar())))|| (key==8) ) {
-                        
+                    if ((((key > 47 && key < 58) || (key > 95 && key < 106)) && (isValidNumber(e.getKeyChar()))) || (key == 8)) {
+
                         int a = Integer.parseInt(((JTextField) e.getSource()).getText().trim());
-                        this.count=a;
+                        this.count = a;
                         this.addFields(a);
                         panel.revalidate();
                         panel.repaint();
                     } else {
-                        ((JTextField) e.getSource()).setText(count+"");
-                        //((JTextField) e.getSource()).setText(((JTextField) e.getSource()).getText().substring(0, ((JTextField) e.getSource()).getText().length() - 1));
+                        ((JTextField) e.getSource()).setText(count + "");
+                        ////((JTextField) e.getSource()).setText(((JTextField) e.getSource()).getText().substring(0, ((JTextField) e.getSource()).getText().length() - 1));
                         JOptionPane.showMessageDialog(this, "Please Enter Only Number");
                         e.consume();
                     }
@@ -148,6 +179,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
             }
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
+
     }
 
     public void addFields(int count) {
@@ -202,7 +234,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
             ip.setName(i + "");
             try {
                 panel.add(ip, gridConstraints);
-               // System.err.println(ipList);
+                // System.err.println(ipList);
                 //this.add(ip, gridConstraints);
                 //System.err.println(ipList.get(i));
                 tempList.add(i, ipList.get(i));
@@ -216,16 +248,54 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
     }
 
     public boolean isNotSpecialkey(int key) {
-
-        return (((key == 32) || (key == 8) || (key > 43 && key < 112) || (key == 127) || (key > 149 && key < 154) || (key > 159 && key < 224)));
+//|| (key == 127)
+        return (((key == 32) || (key == 8) || (key > 43 && key < 112) || (key > 149 && key < 154) || (key > 159 && key < 224)));
 
     }
-    public boolean isValidNumber(char number){
-        try{
-            int num=Integer.parseInt((number+"").trim());
+
+    public boolean isValidNumber(char number) {
+        try {
+            int num = Integer.parseInt((number + "").trim());
             return true;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             return false;
+        }
+    }
+
+    private void setIpMap(List IpList) {
+        for (int i = 0; i < IpList.size(); i++) {
+            ipMap.put(i, IpList.get(i));
+        }
+    }
+
+    public void chkFields() {
+        List temp = new ArrayList(errorIpMap.keySet());
+        List currentIpList = new ArrayList();
+        currentIpList.addAll(ipList);
+       // System.err.println(ipList);
+        //System.err.println(ipList);
+        for (int i = 0; i < temp.size(); i++) {
+            try {
+                //currentIpList.remove(((JTextField) ((KeyEvent) temp.get(i)).getSource()).getText());
+                if ((CustomDesign.ipValidate(((JTextField) ( temp.get(i))).getText())) && (!currentIpList.contains(((JTextField) ( temp.get(i))).getText()))) {
+                    ((JTextField) ( temp.get(i))).setBackground(Color.GREEN);
+                    // System.err.println("check ===" +listener.getErrorMap().get(((KeyEvent) temp.get(i)) ));
+                    listener.getErrorMap().put(temp.get(i), true);
+                   errorIpMap.put(temp.get(i), true);
+                    
+                    //ipList.add(Integer.parseInt(((JTextField) ((KeyEvent) temp.get(i)).getSource()).getName().trim()), ((JTextField) ((KeyEvent) temp.get(i)).getSource()).getText());
+                    ipMap.put(Integer.parseInt(((JTextField) ( temp.get(i))).getName().trim()), ((JTextField) ( temp.get(i))).getText());
+                    ipList = new ArrayList<>(ipMap.values());
+                    if (!listener.getErrorMap().containsValue(false)) {
+                        listener.getStatus(true);
+                    }
+                    System.err.println("checking");
+                    System.err.println(errorIpMap.values());
+                    System.err.println(listener.getErrorMap().values());
+                }
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
         }
     }
 
