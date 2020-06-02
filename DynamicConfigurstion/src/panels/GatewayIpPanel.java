@@ -87,11 +87,12 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                 if ((CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) && (!ipList.contains(((JTextField) e.getSource()).getText()))) {
                     errorIpMap.put(e.getSource(), true);
                     listener.getSource(e, true);
-                    if (Integer.parseInt(ipField.getName()) >= ipList.size()) {
-                        ipMap.put(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
-                    } else {
-                        ipMap.put(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
-                    }
+//                    if (Integer.parseInt(ipField.getName()) >= ipList.size()) {
+//                        ipMap.put(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
+//                    } else {
+//                        ipMap.put(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
+//                    }
+                    ipMap.put(Integer.parseInt(ipField.getName()), ((JTextField) e.getSource()).getText());
                     ipField.setBackground(Color.GREEN);
                     ipList = new ArrayList<>(ipMap.values());
                     if (errorIpMap.containsValue(false)) {
@@ -163,12 +164,13 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
             }
         } else {
             this.showFields(count);
+            // this.ipList=new ArrayList<>(ipMap.values());
             this.ipList = tempList;
         }
     }
 
     public void showFields(int count) {
-        int iterater = 0;
+        int iterater;
         if (count == -1) {
             iterater = ipList.size();
         } else {
@@ -176,7 +178,9 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
         }
 
         tempList = new ArrayList();
+        ipMap.clear();
         panel.removeAll();
+
         xPoint = 0;
         yPoint = 0;
         gridConstraints.fill = GridBagConstraints.VERTICAL;
@@ -195,6 +199,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                 //this.add(ip, gridConstraints);
                 //System.err.println(ipList.get(i));
                 tempList.add(i, ipList.get(i));
+                ipMap.put(i, ipList.get(i));
                 ip.setText(ipList.get(i));
                 yPoint++;
             } catch (Exception ex) {
@@ -213,6 +218,18 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
     public boolean isValidNumber(char number) {
         try {
             int num = Integer.parseInt((number + "").trim());
+            List temp = new ArrayList(errorIpMap.keySet());
+
+            for (int i = 0; i < temp.size(); i++) {
+                listener.getErrorMap().remove(((JTextField) temp.get(i)));
+                errorIpMap.remove(((JTextField) temp.get(i)));
+            }
+            if (listener.getErrorMap().containsValue(false)) {
+                listener.getStatus(false);
+            } else {
+                listener.getStatus(true);
+            }
+
             return true;
         } catch (Exception ex) {
             return false;
