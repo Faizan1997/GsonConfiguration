@@ -102,11 +102,11 @@ public class BasicIpPanel extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         JComponent ipField = (JTextField) e.getSource();
-        if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) {
+        if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText().trim())) {
             listener.getSource(e, true);
             //CustomDesign.getInstance().getErrorMap().put(e.getSource(), true);
             ipMap.remove(ipField.getName().toLowerCase());
-            ipMap.put(ipField.getName().toLowerCase(), ((JTextField) e.getSource()).getText());
+            ipMap.put(ipField.getName().toLowerCase(), ((JTextField) e.getSource()).getText().trim());
             System.err.println(ipMap.get(ipField.getName().toLowerCase()));
             ipField.setBackground(Color.green);
             if (!listener.getErrorMap().containsValue(false)) {
