@@ -82,9 +82,10 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         JComponent ipField = (JTextField) e.getSource();
+        
         if (isNotSpecialkey(e.getKeyCode())) {
             if (!ipField.getName().equals("")) {
-                if ((CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) && (!ipList.contains(((JTextField) e.getSource()).getText()))) {
+                if ((CustomDesign.ipValidate(((JTextField) e.getSource()).getText())) && (!ipList.contains(((JTextField) e.getSource()).getText())) && !((JTextField) e.getSource()).getText().equals("") ) {
                     errorIpMap.put(e.getSource(), true);
                     listener.getSource(e, true);
 //                    if (Integer.parseInt(ipField.getName()) >= ipList.size()) {
@@ -102,7 +103,16 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                         listener.getStatus(true);
                     }
 
-                } else {
+                }else if(((JTextField) e.getSource()).getText().equals("")){
+                    System.err.println("got point");
+                    errorIpMap.put(e.getSource(), true);
+                    listener.getSource(e, true);
+                    ipField.setBackground(Color.white);
+                    if (!listener.getErrorMap().containsValue(false)) {
+                        listener.getStatus(true);
+                    }
+                    
+                }else {
                     errorIpMap.put(e.getSource(), false);
                     listener.getStatus(false);
                     listener.getSource(e, false);
@@ -122,7 +132,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                 try {
                     int key = e.getKeyCode();
 
-                    if ((((key > 47 && key < 58) || (key > 95 && key < 106)) && (isValidNumber(e.getKeyChar()))) || (key == 8)) {
+                    if ((((key > 47 && key < 58) || (key > 95 && key < 106)) && (isValidNumber(e.getKeyChar()))) || (key == 8) || (key == 127)) {
 
                         int a = Integer.parseInt(((JTextField) e.getSource()).getText().trim());
                         this.count = a;
@@ -211,7 +221,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
 
     public boolean isNotSpecialkey(int key) {
 //|| (key == 127)
-        return (((key == 32) || (key == 8) || (key > 43 && key < 112) || (key > 149 && key < 154) || (key > 159 && key < 224)));
+        return (((key == 32) || (key == 8) || (key > 43 && key < 112) || (key > 149 && key < 154) || (key > 159 && key < 224) || (key == 127)));
 
     }
 
