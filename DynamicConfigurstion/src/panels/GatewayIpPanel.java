@@ -82,10 +82,10 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         JComponent ipField = (JTextField) e.getSource();
-        
+
         if (isNotSpecialkey(e.getKeyCode())) {
             if (!ipField.getName().equals("")) {
-                if ((CustomDesign.ipValidate(((JTextField) e.getSource()).getText().trim())) && (!ipList.contains(((JTextField) e.getSource()).getText().trim())) && !((JTextField) e.getSource()).getText().trim().equals("") ) {
+                if ((CustomDesign.ipValidate(((JTextField) e.getSource()).getText().trim())) && (!ipList.contains(((JTextField) e.getSource()).getText().trim())) && !((JTextField) e.getSource()).getText().trim().equals("")) {
                     errorIpMap.put(e.getSource(), true);
                     listener.getSource(e, true);
 //                    if (Integer.parseInt(ipField.getName()) >= ipList.size()) {
@@ -103,16 +103,22 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                         listener.getStatus(true);
                     }
 
-                }else if(((JTextField) e.getSource()).getText().trim().equals("")){
+                } else if (((JTextField) e.getSource()).getText().trim().equals("")) {
                     System.err.println("got point");
                     errorIpMap.put(e.getSource(), true);
                     listener.getSource(e, true);
                     ipField.setBackground(Color.white);
+                    try {
+                        ipMap.remove(Integer.parseInt(ipField.getName().trim()));
+                    } catch (Exception ex) {
+                        System.err.println(ex.getMessage());
+                    }
+                    ipList = new ArrayList<>(ipMap.values());
                     if (!listener.getErrorMap().containsValue(false)) {
                         listener.getStatus(true);
                     }
-                    
-                }else {
+
+                } else {
                     errorIpMap.put(e.getSource(), false);
                     listener.getStatus(false);
                     listener.getSource(e, false);
@@ -136,6 +142,15 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
 
                         int a = Integer.parseInt(((JTextField) e.getSource()).getText().trim());
                         this.count = a;
+
+                        List temp = new ArrayList(errorIpMap.keySet());
+                        for (int i = 0; i < temp.size(); i++) {
+                            listener.getErrorMap().remove(temp.get(i));
+                        }
+                        errorIpMap.clear();
+                        if (!listener.getErrorMap().containsValue(false)) {
+                            listener.getStatus(true);
+                        }
                         this.addFields(a);
                         panel.revalidate();
                         panel.repaint();
@@ -254,11 +269,13 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
 
     public void chkFields() {
         List temp = new ArrayList(errorIpMap.keySet());
-        List currentIpList = new ArrayList();
-        currentIpList.addAll(ipList);
+        List currentIpList = new ArrayList(ipMap.values());
+        // currentIpList.addAll(ipList);
+        System.err.println("Before" + currentIpList);
         for (int i = 0; i < temp.size(); i++) {
             try {
                 if ((CustomDesign.ipValidate(((JTextField) (temp.get(i))).getText().trim())) && (!currentIpList.contains(((JTextField) (temp.get(i))).getText().trim()))) {
+                    //if ((CustomDesign.ipValidate(((JTextField) (temp.get(i))).getText().trim())) && (!currentIpList.contains(((JTextField) (temp.get(i))).getText().trim()))) {
                     ((JTextField) (temp.get(i))).setBackground(Color.GREEN);
                     listener.getErrorMap().put(temp.get(i), true);
                     errorIpMap.put(temp.get(i), true);
@@ -275,5 +292,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
             }
         }
     }
+
+   
 
 }
