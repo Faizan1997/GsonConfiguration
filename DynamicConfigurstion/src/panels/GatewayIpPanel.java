@@ -141,23 +141,28 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                     if ((((key > 47 && key < 58) || (key > 95 && key < 106)) && (isValidNumber(e.getKeyChar()))) || (key == 8) || (key == 127)) {
 
                         int a = Integer.parseInt(((JTextField) e.getSource()).getText().trim());
-                        this.count = a;
-
-                        List temp = new ArrayList(errorIpMap.keySet());
-                        for (int i = 0; i < temp.size(); i++) {
-                            listener.getErrorMap().remove(temp.get(i));
+                        
+                        if (a >= 0 && a <= 1000) {
+                            this.count = a;
+                            List temp = new ArrayList(errorIpMap.keySet());
+                            for (int i = 0; i < temp.size(); i++) {
+                                listener.getErrorMap().remove(temp.get(i));
+                            }
+                            errorIpMap.clear();
+                            if (!listener.getErrorMap().containsValue(false)) {
+                                listener.getStatus(true);
+                            }
+                            this.addFields(a);
+                            panel.revalidate();
+                            panel.repaint();
+                        } else {
+                            ((JTextField) e.getSource()).setText(count + "");
+                            JOptionPane.showMessageDialog(this, "Please Enter Valid Number (range 0-1000)");
                         }
-                        errorIpMap.clear();
-                        if (!listener.getErrorMap().containsValue(false)) {
-                            listener.getStatus(true);
-                        }
-                        this.addFields(a);
-                        panel.revalidate();
-                        panel.repaint();
                     } else {
                         ((JTextField) e.getSource()).setText(count + "");
                         ////((JTextField) e.getSource()).setText(((JTextField) e.getSource()).getText().substring(0, ((JTextField) e.getSource()).getText().length() - 1));
-                        JOptionPane.showMessageDialog(this, "Please Enter Only Number");
+                        JOptionPane.showMessageDialog(this, "Please Enter Valid Number (range 0-1000)");
                         e.consume();
                     }
                 } catch (Exception ex) {
@@ -243,6 +248,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
     public boolean isValidNumber(char number) {
         try {
             int num = Integer.parseInt((number + "").trim());
+
             List temp = new ArrayList(errorIpMap.keySet());
 
             for (int i = 0; i < temp.size(); i++) {
@@ -256,6 +262,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
             }
 
             return true;
+
         } catch (Exception ex) {
             return false;
         }
@@ -292,7 +299,5 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
             }
         }
     }
-
-   
 
 }
