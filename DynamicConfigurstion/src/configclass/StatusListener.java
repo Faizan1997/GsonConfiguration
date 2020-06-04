@@ -6,6 +6,7 @@
 package configclass;
 
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,4 +18,6 @@ public interface StatusListener {
     public void getStatus(boolean status);
     public void getSource(KeyEvent event,boolean status);
     public Map getErrorMap();
+    public List getIpList();
+    public Map getFeildMap();
 }

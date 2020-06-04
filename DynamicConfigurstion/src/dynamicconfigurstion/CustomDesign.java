@@ -22,6 +22,7 @@ import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,12 +62,11 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
     private JPanel buttonPanel;
     private Object[] keyArray;
     private Map basicIpMap;
-   // private static CustomDesign frame = new CustomDesign();
+    // private static CustomDesign frame = new CustomDesign();
     private Map errorMap = new HashMap();
-
-//    public Map getErrorMap() {
-//        return errorMap;
-//    }
+    private Map fieldMap = new HashMap();
+    private List gatewaysList = new ArrayList();
+    private List<String> tempList = new ArrayList();
 
     public void setErrorMap(Map errorMap) {
         this.errorMap = errorMap;
@@ -152,19 +152,23 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
 
             } else if (dataFieldsrArray[i].getType() == List.class && (object != null)) {
 
-                gatewayData = new GatewayModel();
-                gatewayData.setGatewayName(dataFieldsrArray[i].getName());
-                gatewayData.setGatewayValues((List) object);
+                if (this.setList((List) object)) {
+                    gatewayData = new GatewayModel();
+                    gatewayData.setGatewayName(dataFieldsrArray[i].getName());
+                    gatewayData.setGatewayValues((List) object);
 
-                gridConstraints.fill = GridBagConstraints.HORIZONTAL;
-                gridConstraints.ipady = 10;
-                gridConstraints.gridx = 0;
-                gridConstraints.gridy = 1;
-                gateway = new GatewayPanel(gatewayData,this);
-                gatewayMap.put(gatewayData.getGatewayName().toLowerCase(), gateway);
+                    gridConstraints.fill = GridBagConstraints.HORIZONTAL;
+                    gridConstraints.ipady = 10;
+                    gridConstraints.gridx = 0;
+                    gridConstraints.gridy = 1;
+                    gateway = new GatewayPanel(gatewayData, this);
+                    gatewayMap.put(gatewayData.getGatewayName().toLowerCase(), gateway);
 
-                mainGatewayPanel.add(gateway, gridConstraints);
-
+                    mainGatewayPanel.add(gateway, gridConstraints);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Configuration File Contains Duplicate Ips!");
+                    System.exit(0);
+                }
             }
 
         }
@@ -188,7 +192,6 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
 //            return frame;
 //        }
 //    }
-
     public JButton getSaveConfiguration() {
         return saveConfiguration;
     }
@@ -223,6 +226,7 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
         keyArray = gatewayMap.keySet().toArray();
         for (int i = 0; i < gatewayMap.size(); i++) {
             try {
+                //System.err.println("Before Submitting"+((GatewayPanel) gatewayMap.get(keyArray[i].toString())).getIpPanel().getIpList());
                 methodMap.get("set" + keyArray[i].toString().toLowerCase()).invoke(data, ((GatewayPanel) gatewayMap.get(keyArray[i].toString())).getIpPanel().getIpList());;
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 System.err.println("Something wrong");
@@ -264,21 +268,54 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
         saveConfiguration.setEnabled(status);
         if (status) {
             saveConfiguration.setText("Save Configuration");
-        }else{
+        } else {
             saveConfiguration.setText("Please Correct Your IP");
         }
 
     }
 
-  @Override
-    public void getSource(KeyEvent e,boolean status) {
+    @Override
+    public void getSource(KeyEvent e, boolean status) {
         errorMap.put(e.getSource(), status);
     }
 
-   @Override
+    @Override
     public Map getErrorMap() {
         return errorMap;
     }
-    
+
+    @Override
+    public List getIpList() {
+        return gatewaysList;
+
+    }
+
+    private boolean setList(List<String> list) {
+        for (int i = 0; i < list.size(); i++) {
+            tempList.add(list.get(i));
+        }
+        return checkDuplication();
+    }
+
+    private boolean checkDuplication() {
+        Map<String, Integer> hm = new HashMap<String, Integer>();
+
+        for (String i : tempList) {
+            Integer j = hm.get(i);
+            hm.put(i, (j == null) ? 1 : j + 1);
+        }
+
+        if (hm.containsValue(2)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public Map getFeildMap() {
+        return fieldMap;
+    }
+
 
 }
