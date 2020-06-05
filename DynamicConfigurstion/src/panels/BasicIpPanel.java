@@ -103,10 +103,11 @@ public class BasicIpPanel extends JPanel implements KeyListener {
     public void keyReleased(KeyEvent e) {
         evaluate(e);
     }
-    
-    public void evaluate(KeyEvent e){
+
+    public void evaluate(KeyEvent e) {
         JComponent ipField = (JTextField) e.getSource();
-        if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText().trim())) {
+
+        if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText().trim()) && !((JTextField) e.getSource()).getText().trim().equals("")) {
             listener.getSource(e, true);
             //CustomDesign.getInstance().getErrorMap().put(e.getSource(), true);
             //ipMap.remove(ipField.getName().toLowerCase());
@@ -119,18 +120,21 @@ public class BasicIpPanel extends JPanel implements KeyListener {
                 //CustomDesign.getInstance().getSaveConfiguration().setText("Save Configuration");
             }
 
+        } else if (((JTextField) e.getSource()).getText().trim().equals("")) {
+            listener.getSource(e, true);
+            ipField.setBackground(Color.white);
+            ipMap.put(ipField.getName().toLowerCase(), ((JTextField) e.getSource()).getText().trim());
+            
         } else {
             listener.getStatus(false);
             listener.getSource(e, false);
-           // CustomDesign.getInstance().getErrorMap().put(e.getSource(), false);
+            // CustomDesign.getInstance().getErrorMap().put(e.getSource(), false);
 
             ipField.setBackground(Color.red);
             //CustomDesign.getInstance().getSaveConfiguration().setEnabled(false);
             //CustomDesign.getInstance().getSaveConfiguration().setText("Please Correct Your IP");
             //JOptionPane.showMessageDialog(this, "Invalid IP!");
         }
-    }
-        
-    
 
+    }
 }
