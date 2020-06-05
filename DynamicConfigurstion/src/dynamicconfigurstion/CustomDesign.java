@@ -67,6 +67,7 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
     private Map fieldMap = new HashMap();
     private List gatewaysList = new ArrayList();
     private List<String> tempList = new ArrayList();
+    private Map gatewayIpMap = new HashMap();
 
     public void setErrorMap(Map errorMap) {
         this.errorMap = errorMap;
@@ -285,8 +286,8 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
     }
 
     @Override
-    public List getIpList() {
-        return gatewaysList;
+    public Map getIpMap() {
+        return gatewayIpMap;
 
     }
 

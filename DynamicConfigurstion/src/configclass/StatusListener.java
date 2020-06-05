@@ -18,6 +18,6 @@ public interface StatusListener {
     public void getStatus(boolean status);
     public void getSource(KeyEvent event,boolean status);
     public Map getErrorMap();
-    public List getIpList();
+    public Map getIpMap();
     public Map getFeildMap();
 }
