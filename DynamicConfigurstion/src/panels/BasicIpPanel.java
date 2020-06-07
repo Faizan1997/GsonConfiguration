@@ -108,26 +108,29 @@ public class BasicIpPanel extends JPanel implements KeyListener {
         JComponent ipField = (JTextField) e.getSource();
 
         if (CustomDesign.ipValidate(((JTextField) e.getSource()).getText().trim()) && !((JTextField) e.getSource()).getText().trim().equals("")) {
-            listener.getSource(e, true);
+            //listener.getSource(e, true);
+            listener.getIpPanelErrorMap().put(e.getSource(), true);
             //CustomDesign.getInstance().getErrorMap().put(e.getSource(), true);
             //ipMap.remove(ipField.getName().toLowerCase());
             ipMap.put(ipField.getName().toLowerCase(), ((JTextField) e.getSource()).getText().trim());
             System.err.println(ipMap.get(ipField.getName().toLowerCase()));
             ipField.setBackground(Color.green);
-            if (!listener.getErrorMap().containsValue(false)) {
+            if (!listener.getErrorMap().containsValue(false) && !listener.getIpPanelErrorMap().containsValue(false)) {
                 listener.getStatus(true);
                 // CustomDesign.getInstance().getSaveConfiguration().setEnabled(true);
                 //CustomDesign.getInstance().getSaveConfiguration().setText("Save Configuration");
             }
 
         } else if (((JTextField) e.getSource()).getText().trim().equals("")) {
-            listener.getSource(e, true);
+            //listener.getSource(e, true);
+            listener.getIpPanelErrorMap().put(e.getSource(), true);
             ipField.setBackground(Color.white);
             ipMap.put(ipField.getName().toLowerCase(), ((JTextField) e.getSource()).getText().trim());
             
         } else {
             listener.getStatus(false);
-            listener.getSource(e, false);
+            listener.getIpPanelErrorMap().put(e.getSource(), false);
+            //listener.getSource(e, false);
             // CustomDesign.getInstance().getErrorMap().put(e.getSource(), false);
 
             ipField.setBackground(Color.red);

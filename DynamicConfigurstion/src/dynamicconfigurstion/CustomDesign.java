@@ -68,6 +68,7 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
     private List gatewaysList = new ArrayList();
     private List<String> tempList = new ArrayList();
     private Map gatewayIpMap = new HashMap();
+    private Map IpPanelErrorMap = new HashMap();
 
     public void setErrorMap(Map errorMap) {
         this.errorMap = errorMap;
@@ -111,7 +112,14 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
         basicIpPanel.setBorder(title);
         try {
             data = readData.readJsonData("custom.json");
-            dataFieldsrArray = data.getClass().getDeclaredFields();
+            if (data!=null) {
+               // data = readData.readJsonData("custom.json");
+                dataFieldsrArray = data.getClass().getDeclaredFields();
+            }else{
+                JOptionPane.showMessageDialog(this, "Found Some Errors In Your Configuration File! Please Check");
+                System.exit(0);
+            }
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "File Not Found! Please Check Your Configuration File");
             System.exit(0);
@@ -167,7 +175,7 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
 
                     mainGatewayPanel.add(gateway, gridConstraints);
                 } else {
-                    JOptionPane.showMessageDialog(this, "Configuration File Contains Duplicate Ips!");
+                    JOptionPane.showMessageDialog(this, "Configuration File Contains Duplicate Ips Or Invalid Ips!");
                     System.exit(0);
                 }
             }
@@ -300,16 +308,34 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
 
     private boolean checkDuplication() {
         Map<String, Integer> hm = new HashMap<String, Integer>();
-
+        List temp = new ArrayList();
+        boolean ipRegex = false;
+        boolean count = false;
         for (String i : tempList) {
             Integer j = hm.get(i);
             hm.put(i, (j == null) ? 1 : j + 1);
+            if (ipValidate(i)) {
+                ipRegex = true;
+            } else {
+                ipRegex = false;
+                break;
+            }
+        }
+        temp = new ArrayList(hm.values());
+
+        for (int i = 0; i < temp.size(); i++) {
+            if (((int) temp.get(i)) > 1) {
+                count = false;
+                break;
+            } else {
+                count = true;
+            }
         }
 
-        if (hm.containsValue(2)) {
-            return false;
-        } else {
+        if (count && ipRegex) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -318,5 +344,9 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
         return fieldMap;
     }
 
+    @Override
+    public Map getIpPanelErrorMap() {
+        return IpPanelErrorMap;
+    }
 
 }

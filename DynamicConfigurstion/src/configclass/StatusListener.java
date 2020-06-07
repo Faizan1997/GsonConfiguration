@@ -20,4 +20,5 @@ public interface StatusListener {
     public Map getErrorMap();
     public Map getIpMap();
     public Map getFeildMap();
+    public Map getIpPanelErrorMap();
 }

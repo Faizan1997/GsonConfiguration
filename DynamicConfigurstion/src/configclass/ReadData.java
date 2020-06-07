@@ -7,6 +7,7 @@ package configclass;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sun.java.swing.plaf.windows.resources.windows;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import javax.naming.spi.DirStateFactory;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -36,7 +38,7 @@ public class ReadData {
             br.close();
 
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            return null;
         }
 
         return result;

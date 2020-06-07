@@ -269,7 +269,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                 listener.getErrorMap().remove(((JTextField) temp.get(i)));
                 errorIpMap.remove(((JTextField) temp.get(i)));
             }
-            if (listener.getErrorMap().containsValue(false)) {
+            if (listener.getErrorMap().containsValue(false) || listener.getIpPanelErrorMap().containsValue(false)) {
                 listener.getStatus(false);
             } else {
                 listener.getStatus(true);
@@ -294,6 +294,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
         List temp = new ArrayList(listener.getErrorMap().keySet());
         //List currentIpList = new ArrayList(ipMap.values());
         // currentIpList.addAll(ipList);
+        System.err.println("ChkFields "+listener.getIpMap().values());
         List currentIpList = new ArrayList(listener.getIpMap().values());
         
         for (int i = 0; i < temp.size(); i++) {
@@ -301,7 +302,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                 if ((CustomDesign.ipValidate(((JTextField) (temp.get(i))).getText().trim())) && (!currentIpList.contains(((JTextField) (temp.get(i))).getText().trim()))) {
                     //if ((CustomDesign.ipValidate(((JTextField) (temp.get(i))).getText().trim())) && (!currentIpList.contains(((JTextField) (temp.get(i))).getText().trim()))) {
                     ((JTextField) (temp.get(i))).setBackground(Color.GREEN);
-                    listener.getErrorMap().put(temp.get(i), true);
+                    listener.getErrorMap().put((JTextField)temp.get(i), true);
                     errorIpMap.put(temp.get(i), true);
                     listener.getIpMap().put( (((JTextField) (temp.get(i)))) , ((JTextField) (temp.get(i))).getText().trim());
                     //ipMap.put(Integer.parseInt(((JTextField) (temp.get(i))).getName().trim()), ((JTextField) (temp.get(i))).getText().trim());
@@ -310,7 +311,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                     
                     currentIpList = new ArrayList(listener.getIpMap().values());
                     
-                    if (!listener.getErrorMap().containsValue(false)) {
+                    if (!listener.getErrorMap().containsValue(false) && !listener.getIpPanelErrorMap().containsValue(false)) {
                         listener.getStatus(true);
                     }
 
@@ -354,7 +355,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                     ipField.setBackground(Color.GREEN);
                     ipList = new ArrayList<>(ipMap.values());
                     chkFields();
-                    if (!listener.getErrorMap().containsValue(false)) {
+                    if (!listener.getErrorMap().containsValue(false) && !listener.getIpPanelErrorMap().containsValue(false)) {
                         listener.getStatus(true);
                     }
 
@@ -371,7 +372,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                         System.err.println(ex.getMessage());
                     }
                     ipList = new ArrayList<>(ipMap.values());
-                    if (!listener.getErrorMap().containsValue(false)) {
+                    if (!listener.getErrorMap().containsValue(false) && !listener.getIpPanelErrorMap().containsValue(false)) {
                         listener.getStatus(true);
                     }
 
@@ -380,7 +381,9 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                     listener.getStatus(false);
                     listener.getSource(e, false);
                     try {
+                        System.err.println("Checking "+listener.getIpMap().get((JTextField) e.getSource()));
                         listener.getIpMap().remove(((JTextField) e.getSource()));
+                        System.err.println("After "+listener.getIpMap().values());
                         ipMap.remove(Integer.parseInt(ipField.getName().trim()));
 
                     } catch (Exception ex) {
@@ -406,7 +409,7 @@ public class GatewayIpPanel extends JPanel implements KeyListener {
                                 listener.getErrorMap().remove(temp.get(i));
                             }
                             errorIpMap.clear();
-                            if (!listener.getErrorMap().containsValue(false)) {
+                           if (!listener.getErrorMap().containsValue(false) && !listener.getIpPanelErrorMap().containsValue(false)) {
                                 listener.getStatus(true);
                             }
                             this.addFields(a);
