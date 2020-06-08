@@ -121,12 +121,12 @@ public class BasicIpPanel extends JPanel implements KeyListener {
                 //CustomDesign.getInstance().getSaveConfiguration().setText("Save Configuration");
             }
 
-        } else if (((JTextField) e.getSource()).getText().trim().equals("")) {
-            //listener.getSource(e, true);
-            listener.getIpPanelErrorMap().put(e.getSource(), true);
-            ipField.setBackground(Color.white);
-            ipMap.put(ipField.getName().toLowerCase(), ((JTextField) e.getSource()).getText().trim());
-            
+//        } else if (((JTextField) e.getSource()).getText().trim().equals("")) {
+//            //listener.getSource(e, true);
+//            listener.getIpPanelErrorMap().put(e.getSource(), true);
+//            ipField.setBackground(Color.white);
+//            ipMap.put(ipField.getName().toLowerCase(), ((JTextField) e.getSource()).getText().trim());
+//            
         } else {
             listener.getStatus(false);
             listener.getIpPanelErrorMap().put(e.getSource(), false);

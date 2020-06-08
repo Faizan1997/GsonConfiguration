@@ -152,13 +152,16 @@ public class CustomDesign extends JFrame implements ActionListener, StatusListen
             }
             //JPanel basicIpPanel=new JPanel(new GridLayout(1, 4));
             if (dataFieldsrArray[i].getType() == String.class && (object != null)) {
-
+                if(ipValidate(object.toString().trim())){
                 ipData = new BasicIPModel();
                 ipData.setFieldName(dataFieldsrArray[i].getName());
                 ipData.setFieldValue(object.toString());
 
                 ipPanel.addNewIpValue(ipData);
-
+                }else{
+                    JOptionPane.showMessageDialog(this, "Configuration File Contains Duplicate Ips Or Invalid Ips!");
+                    System.exit(0);
+                }
             } else if (dataFieldsrArray[i].getType() == List.class && (object != null)) {
 
                 if (this.setList((List) object)) {
